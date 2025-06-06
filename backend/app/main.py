@@ -65,7 +65,7 @@ async def chat(req: ChatRequest):
             stream = graph.stream(
                 {"messages": [message]}, 
                 config=config,
-                stream_mode="updates"
+                stream_mode=["updates", "messages"]
             )
 
             for chunk in stream:

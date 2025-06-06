@@ -144,12 +144,17 @@ def software_developer_assistant(state: MessagesState):
    
    # Simple router based on user input
    user_input = state["messages"][-1].content.lower()
+   
+   # Let LangGraph manage the message state directly. This is more robust.
+   messages = state["messages"]
+
    if "clone" in user_input or "http" in user_input:
        tools_for_llm = cloning_tools
-       messages = [sys_msg] + state["messages"]
+       # Just add the system message
+       messages_for_llm = [sys_msg] + messages
    else:
        tools_for_llm = creation_tools
-       # Provide file content as context for editing tasks
+       # For edits, provide the current file content as context in a simpler way.
        try:
            with open("../frontend/public/page.html", "r") as f:
                html_content = f.read()
@@ -179,11 +184,11 @@ Please use this context to inform your edits. Remember that the write tools will
 """,
            name="context_provider"
        )
-       # Inject context right before the user's latest message
-       messages = [sys_msg] + state["messages"][:-1] + [context_message, state["messages"][-1]]
+       # Add the system message and the context at the beginning.
+       messages_for_llm = [sys_msg, context_message] + messages
        
    llm_with_tools = llm.bind_tools(tools_for_llm)
-   return {"messages": [llm_with_tools.invoke(messages)]}
+   return {"messages": [llm_with_tools.invoke(messages_for_llm)]}
 
 def build_workflow(checkpointer=None):
     # Graph

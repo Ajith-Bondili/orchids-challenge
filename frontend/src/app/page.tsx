@@ -18,6 +18,8 @@ interface Message {
 }
 
 const formatNodeName = (name: string) => {
+  if (name === 'tools') return 'Tools';
+  if (name === 'software_developer_assistant') return 'Software Developer Assistant';
   return name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
@@ -35,7 +37,7 @@ const WorkflowDetails = ({ details }: { details: WorkflowNode[] }) => {
         <div className="workflow-details-content">
           {details.map((node, index) => (
             <div key={index} className="workflow-node">
-              <div className="node-title">{formatNodeName(node.name)}</div>
+              <div className="node-title">{node.name}</div>
               <pre className="node-content">{node.content}</pre>
             </div>
           ))}
@@ -87,7 +89,7 @@ export default function Home() {
     const assistantMessagePlaceholder: Message = {
       id: assistantMessageId,
       role: 'assistant',
-      content: '', // Start with empty content
+      content: "I've processed your request.", // This is the static, final message
       status: 'Thinking...',
       workflowDetails: [],
     };
@@ -120,55 +122,73 @@ export default function Home() {
             const parsed = JSON.parse(jsonStr);
             
             if (parsed.type === 'update' && parsed.data) {
-              const nodeName = Object.keys(parsed.data)[0];
-              const nodeData = parsed.data[nodeName];
-
               setMessages(prev => prev.map(msg => {
-                if (msg.id === assistantMessageId) {
-                  const newWorkflowDetails = [...(msg.workflowDetails || [])];
+                if (msg.id !== assistantMessageId) return msg;
+                
+                let newWorkflowDetails = [...(msg.workflowDetails || [])];
+                
+                // Case 1: Live token stream from an LLM ('messages' stream)
+                if (Array.isArray(parsed.data) && parsed.data[0] === 'messages') {
+                    const messageChunk = parsed.data[1];
+                    const speakingNodeName = formatNodeName(messageChunk.response_metadata?.langgraph_node || 'Software Developer Assistant');
 
-                  // Handle the Software Developer Assistant node
-                  if (nodeName === 'software_developer_assistant') {
-                    const message = nodeData.messages?.[0];
-                    if (message?.content) {
-                      let assistantNode = newWorkflowDetails.find(n => n.name === 'Software Developer Assistant');
-                      if (!assistantNode) {
-                        assistantNode = { name: 'Software Developer Assistant', content: '' };
-                        newWorkflowDetails.push(assistantNode);
-                      }
-                      assistantNode.content = message.content;
+                    const nodeIndex = newWorkflowDetails.findIndex(n => n.name === speakingNodeName);
+                    
+                    if (nodeIndex > -1) {
+                        const updatedNode = {
+                            ...newWorkflowDetails[nodeIndex],
+                            content: (newWorkflowDetails[nodeIndex].content || '') + (messageChunk.content || ''),
+                        };
+                        newWorkflowDetails[nodeIndex] = updatedNode;
+                    } else {
+                        newWorkflowDetails.push({ name: speakingNodeName, content: messageChunk.content || '' });
                     }
-                    if (message?.tool_calls?.length) {
-                      let toolsNode = newWorkflowDetails.find(n => n.name === 'Tools');
-                      if (!toolsNode) {
-                        toolsNode = { name: 'Tools', content: '' };
-                        newWorkflowDetails.push(toolsNode);
-                      }
-                      const toolCalls = message.tool_calls.map(tc => `Calling: ${tc.name} with args:\n${JSON.stringify(tc.args, null, 2)}`).join('\n\n');
-                      toolsNode.content += toolCalls;
-                    }
-                  } else if (nodeName === 'tools') {
-                      let toolsNode = newWorkflowDetails.find(n => n.name === 'Tools');
-                      if (!toolsNode) {
-                        toolsNode = { name: 'Tools', content: '' };
-                        newWorkflowDetails.push(toolsNode);
-                      }
-                      const toolOutput = nodeData.messages.map(m => m.content).join('\n');
-                      toolsNode.content += `\n\nOutput:\n${toolOutput}`;
-                  }
-                  
-                  return { ...msg, workflowDetails: newWorkflowDetails, status: `Processing... ${formatNodeName(nodeName)}` };
+                    
+                    return { ...msg, workflowDetails: newWorkflowDetails, status: `Streaming from ${speakingNodeName}...` };
                 }
-                return msg;
+
+                // Case 2: State update from a node ('updates' stream)
+                if (typeof parsed.data === 'object' && !Array.isArray(parsed.data)) {
+                    const nodeName = Object.keys(parsed.data)[0];
+                    const nodeData = parsed.data[nodeName];
+                    const toolCalls = nodeData.messages?.[0]?.tool_calls;
+                    const isToolMessage = nodeData.messages?.[0]?.type === 'tool';
+                    
+                    if (toolCalls || isToolMessage) {
+                        const toolsNodeIndex = newWorkflowDetails.findIndex(n => n.name === 'Tools');
+                        let toolsNode;
+
+                        if (toolsNodeIndex > -1) {
+                            toolsNode = {...newWorkflowDetails[toolsNodeIndex]};
+                        } else {
+                            toolsNode = { name: 'Tools', content: '' };
+                        }
+
+                        if (toolCalls) {
+                            const toolLog = toolCalls.map(tc => `Calling Tool: ${tc.name}\nArgs: ${JSON.stringify(tc.args, null, 2)}`).join('\n');
+                            toolsNode.content += toolLog;
+                        }
+                        if (isToolMessage) {
+                            const toolOutput = nodeData.messages.map(m => `\nOutput of ${m.name}:\n${m.content}`).join('');
+                            toolsNode.content += toolOutput;
+                        }
+                        
+                        if (toolsNodeIndex > -1) {
+                            newWorkflowDetails[toolsNodeIndex] = toolsNode;
+                        } else {
+                            newWorkflowDetails.push(toolsNode);
+                        }
+                    }
+
+                    return { ...msg, workflowDetails: newWorkflowDetails, status: `Processing in ${formatNodeName(nodeName)}...` };
+                }
+                
+                return msg; // Return unchanged if no case matches
               }));
+
             } else if (parsed.type === 'final') {
                 setIsLoading(false);
-                setMessages(prev => prev.map(msg => {
-                    if (msg.id === assistantMessageId) {
-                        return { ...msg, content: "I've processed your request.", status: '✅ Complete' };
-                    }
-                    return msg;
-                }));
+                setMessages(prev => prev.map(msg => msg.id === assistantMessageId ? { ...msg, status: '✅ Complete' } : msg));
                  if (iframeRef.current) {
                     iframeRef.current.src = `/page.html?t=${new Date().getTime()}`;
                  }
