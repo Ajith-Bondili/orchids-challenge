@@ -1,6 +1,3 @@
-### This is a utility function that generates a numbered code from a file.
-### Author: Kody Kendall
-### Date: 2025-05-25
 """
 Usage:
 
