@@ -85,6 +85,10 @@ The frontend will be available at `http://localhost:3000`
 4. Wait for the process to complete
 5. View the cloned website preview
 
+## Demo Video
+
+[📹 Watch the demo video](https://drive.google.com/file/d/17ohl87DI4pQ6k2ksK76-fiq7bjdYXe-Y/view?usp=sharing)
+
 ## How It Works & Key Features
 
 This project enables an AI coding agent to reliably clone websites by combining Playwright (with Browserless.io) for robust scraping and a ReAct-style agentic workflow for intelligent reasoning and tool use.
@@ -104,11 +108,3 @@ This project enables an AI coding agent to reliably clone websites by combining 
   - The main agent ("software developer assistant") uses a ReAct-style architecture, choosing tools based on the user's prompt.
   - It can use a "clone" tool to generate new HTML/CSS from the screenshot and DOM, or "edit" tools to modify the cloned site.
   - The system prompt is engineered to instruct the LLM to act as a pixel-perfect front-end engineer, using the screenshot as the source of truth and the DOM for content.
-
-- **Output & Persistence:**
-  - The LLM generates a new, clean, and visually faithful HTML output, saved as `page.html` and displayed in the preview panel.
-  - The default `page.html` and `page.css` provides a clean starting state, and is overwritten only when a new site is cloned
-
-**Design Choices:**
-- Avoids hallucinations and over-abstraction by grounding the LLM in both the screenshot and real DOM structure.
-- Modular, tool-based design allows for easy extension (e.g., adding new tools such as write_javascript for_functionality) instead of adding more nodes and edges if done through a router approach.
