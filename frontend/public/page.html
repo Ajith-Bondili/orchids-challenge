@@ -4,43 +4,43 @@
 <head>
 <meta charset="utf-8"/>
 <title>GitDiagram – Repository to diagram</title>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
 
 <link href="page.css" rel="stylesheet"/></head>
 <body>
 <header>
-<a class="logo" href="/">Git<span>Diagram</span></a>
+<div class="logo">Git<span>Diagram</span></div>
 <nav>
 <a href="#">API Key</a>
 <a href="#">Private Repos</a>
-<a aria-label="GitHub" href="https://github.com/username/repo">🐙 GitHub</a>
-<span aria-hidden="true">⭐ 13.3k</span>
+<a href="https://github.com">GitHub</a>
+<div class="star">⭐ <span>13.3k</span></div>
 </nav>
 </header>
 <main>
 <h1>Repository to<br/>diagram</h1>
-<p class="subtitle">
-        Turn any GitHub repository into an interactive diagram for visualization.<br/>
-        This is useful for quickly visualizing projects.<br/>
-        You can also replace 'hub' with 'diagram' in any Github URL
-    </p>
-<div class="form-wrap">
-<form action="/diagram" method="get">
-<input aria-label="GitHub Repository URL" name="repo" placeholder="https://github.com/username/repo" required="" type="url"/>
+<div class="lead">
+<p>Turn any GitHub repository into an interactive diagram for visualization.<br/>This is useful for quickly visualizing projects.</p>
+<p>You can also replace 'hub' with 'diagram' in any Github URL</p>
+</div>
+<div class="form-box">
+<form action="#" aria-label="Generate diagram">
+<input aria-label="GitHub repository URL" placeholder="https://github.com/username/repo" type="url"/>
 <button type="submit">Diagram</button>
 </form>
-<p class="examples-label">Try these example repositories:</p>
 <div class="examples">
-<a href="https://github.com/tiangolo/fastapi">FastAPI</a>
-<a href="https://github.com/streamlit/streamlit">Streamlit</a>
-<a href="https://github.com/pallets/flask">Flask</a>
-<a href="https://github.com/api-analytics/api-analytics">api-analytics</a>
-<a href="https://github.com/MadRabbit/MonkeyType">Monkeytype</a>
+<p>Try these example repositories:</p>
+<div class="tags">
+<a class="tag" href="https://github.com/tiangolo/fastapi">FastAPI</a>
+<a class="tag" href="https://github.com/streamlit/streamlit">Streamlit</a>
+<a class="tag" href="https://github.com/pallets/flask">Flask</a>
+<a class="tag" href="https://github.com/Metabase/api-analytics">api-analytics</a>
+<a class="tag" href="https://github.com/instagram/MonkeyType">Monkeytype</a>
+</div>
 </div>
 </div>
 </main>
 <footer>
-    Made by <a href="https://github.com/ahmed-khaleel">Ahmed Khaleel</a>
+  Made by <a href="https://github.com/ahmedkhaleel">Ahmed Khaleel</a>
 </footer>
 </body>
 </html>
