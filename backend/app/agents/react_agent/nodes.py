@@ -108,9 +108,25 @@ No extra markdown, no explanations, no leading or trailing whitespace outside th
         }]
     )
 
+    # 1. Get the raw HTML content from the LLM response
     full_html = response.choices[0].message.content
-    soup = BeautifulSoup(full_html, 'html.parser')
 
+    # 2. Clean the response, removing markdown fences and extra whitespace
+    cleaned_html = full_html.strip()
+    if cleaned_html.startswith("```html"):
+        cleaned_html = cleaned_html[7:]
+    elif cleaned_html.startswith("```"):
+        cleaned_html = cleaned_html[3:]
+
+    if cleaned_html.endswith("```"):
+        cleaned_html = cleaned_html[:-3]
+    
+    cleaned_html = cleaned_html.strip()
+
+    # 3. Parse the CLEANED HTML
+    soup = BeautifulSoup(cleaned_html, 'html.parser')
+
+    # 4. Extract CSS and write to page.css
     css_code = ""
     style_tag = soup.find('style')
     if style_tag:
@@ -121,10 +137,12 @@ No extra markdown, no explanations, no leading or trailing whitespace outside th
         with open("../frontend/public/page.css", "w") as f:
             f.write(css_code.strip())
         
+        # Add a link to the external stylesheet in the HTML
         if soup.head:
             link_tag = soup.new_tag("link", rel="stylesheet", href="page.css")
             soup.head.append(link_tag)
 
+    # 5. Write the final HTML (without the inline style tag) to page.html
     with open("../frontend/public/page.html", "w") as f:
         f.write(str(soup))
     

@@ -1,64 +1,46 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>Sign in | LinkedIn</title>
+<meta charset="utf-8"/>
+<title>GitDiagram – Repository to diagram</title>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 
-  <link href="page.css" rel="stylesheet"/>
-</head>
+<link href="page.css" rel="stylesheet"/></head>
 <body>
 <header>
-  <a aria-label="LinkedIn home" class="logo" href="/">
-    <span>Linked</span>
-    <svg aria-hidden="true" viewBox="0 0 34 34"><rect fill="#0a66c2" height="34" rx="4" width="34"></rect><path d="M8 12h4v14H8V12zm2-6a2.5 2.5 0 110 5 2.5 2.5 0 010-5zM14 12h4v2h.1a4.4 4.4 0 013.9-2c4.2 0 5 2.7 5 6.2V26h-4v-7c0-1.7 0-3.9-2.4-3.9-2.4 0-2.8 1.8-2.8 3.8V26h-4V12z" fill="#fff"></path></svg>
-  </a>
+<a class="logo" href="/">Git<span>Diagram</span></a>
+<nav>
+<a href="#">API Key</a>
+<a href="#">Private Repos</a>
+<a aria-label="GitHub" href="https://github.com/username/repo">🐙 GitHub</a>
+<span aria-hidden="true">⭐ 13.3k</span>
+</nav>
 </header>
 <main>
-  <div aria-labelledby="signin-title" class="card" role="region">
-    <h1 id="signin-title">Sign in</h1>
-    <!-- New Hotmail sign-in button -->
-    <a class="btn btn-outline btn-hotmail" href="#">
-      <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="#0072C6" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 8l8 5 8-5v-.01L12 13 4 7.99V8z"/></svg>
-      Continue with Hotmail
-    </a>
-    <!-- Existing Google and Apple buttons -->
-    <a class="btn btn-outline" href="#">
-      <svg aria-hidden="true" viewBox="0 0 533.5 544.3"><path d="M533.5 278.4..." fill="#4285f4"></path></svg>
-      Continue with Google
-    </a>
-    <a class="btn btn-outline" href="#">
-      <svg aria-hidden="true" viewBox="0 0 14 17"><path d="M13.83 13.17c-.47 1.11-1.04 2.14-1.83 3.06-.99 1.18-2.39 2.62-4.07 2.62-1.52 0-1.92-.87-3.56-.87-1.64 0-2.1.85-3.56.85-1.68 0-2.99-1.51-3.97-2.69C-.05 13.6-.43 9.34 1.09 7.14 1.94 6.02 3.28 5.31 4.66 5.31c1.7 0 2.87.88 3.57.88.65 0 2.04-1.07 3.71-.91.63.03 2.41.25 3.56 1.88-.09.06-2.12 1.24-2.1 3.7.03 2.94 2.58 3.9 2.71 3.96z" fill="#000"></path></svg>
-      Sign in with Apple
-    </a>
-    <div class="divider"><span>or</span></div>
-    <form>
-      <div class="input-wrap">
-        <input id="email" placeholder="Email or phone" required type="text"/>
-      </div>
-      <div class="input-wrap">
-        <input id="password" placeholder="Password" required type="password"/>
-        <a class="show-toggle" href="#">Show</a>
-      </div>
-      <a class="forgot" href="#">Forgot password?</a>
-      <label class="checkbox">
-        <input checked type="checkbox"/>
-        Keep me logged in
-      </label>
-      <button class="btn btn-primary" type="submit">Sign in</button>
-    </form>
-  </div>
-  <p class="join">New to LinkedIn? <a href="#">Join now</a></p>
+<h1>Repository to<br/>diagram</h1>
+<p class="subtitle">
+        Turn any GitHub repository into an interactive diagram for visualization.<br/>
+        This is useful for quickly visualizing projects.<br/>
+        You can also replace 'hub' with 'diagram' in any Github URL
+    </p>
+<div class="form-wrap">
+<form action="/diagram" method="get">
+<input aria-label="GitHub Repository URL" name="repo" placeholder="https://github.com/username/repo" required="" type="url"/>
+<button type="submit">Diagram</button>
+</form>
+<p class="examples-label">Try these example repositories:</p>
+<div class="examples">
+<a href="https://github.com/tiangolo/fastapi">FastAPI</a>
+<a href="https://github.com/streamlit/streamlit">Streamlit</a>
+<a href="https://github.com/pallets/flask">Flask</a>
+<a href="https://github.com/api-analytics/api-analytics">api-analytics</a>
+<a href="https://github.com/MadRabbit/MonkeyType">Monkeytype</a>
+</div>
+</div>
 </main>
 <footer>
-  <a href="/">LinkedIn</a> © 2025
-  <a href="#">User Agreement</a>
-  <a href="#">Privacy Policy</a>
-  <a href="#">Community Guidelines</a>
-  <a href="#">Cookie Policy</a>
-  <a href="#">Copyright Policy</a>
-  <a href="#">Send Feedback</a>
-  <a href="#">Language ▾</a>
+    Made by <a href="https://github.com/ahmed-khaleel">Ahmed Khaleel</a>
 </footer>
 </body>
 </html>
