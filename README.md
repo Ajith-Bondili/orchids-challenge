@@ -1,4 +1,4 @@
-# Orchids Website Cloning Challenge
+# Website Cloner
 
 This project consists of a backend built with FastAPI and a frontend built with Next.js and TypeScript. The application allows you to clone websites by providing a URL and getting back a preview of the cloned website's HTML.
 
